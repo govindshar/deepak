@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Excel Summarizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-900">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r shadow-sm flex flex-col">
+      <div class="p-4 font-bold text-lg border-b sticky top-0 bg-white z-10">🕘 History</div>
+      <div class="flex-1 overflow-y-auto">
+        <ul>
+          {% for item in history %}
+            <li class="p-4 border-b hover:bg-gray-50">
+              <a href="/pdf/{{ item.id }}" class="text-blue-600 hover:underline">PDF {{ item.id + 1 }}</a>
+              <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ item.summary[:80] }}...</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 p-8 overflow-y-auto">
+      <h1 class="text-3xl font-bold mb-6">📊 Excel Summarizer</h1>
+
+      <!-- Form -->
+      <form method="post" enctype="multipart/form-data" action="/summarize" class="bg-white p-6 rounded shadow mb-6">
+        <div class="mb-4">
+          <label class="block font-semibold">Upload Excel File</label>
+          <input type="file" name="file" accept=".xls,.xlsx" required class="mt-2 p-2 border w-full rounded" />
+        </div>
+        <div class="mb-4">
+          <label class="block font-semibold">Instruction (optional)</label>
+          <input type="text" name="style" value="Summarize this file" class="mt-2 p-2 border w-full rounded" />
+        </div>
+        <div class="mb-4">
+          <label class="block font-semibold">Word Limit</label>
+          <input type="number" name="word_limit" value="200" min="50" max="1000" class="mt-2 p-2 border w-full rounded" />
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Summarize</button>
+      </form>
+
+      <!-- Summary -->
+      {% if summary %}
+        <div class="bg-white p-6 rounded shadow">
+          <h2 class="text-xl font-semibold mb-4">📄 Summary</h2>
+          <div class="whitespace-pre-line text-sm leading-relaxed">{{ summary }}</div>
+          <a href="/pdf/0" class="block mt-4 text-blue-600 hover:underline">📥 Download PDF</a>
+        </div>
+      {% endif %}
+    </main>
+  </div>
+</body>
+</html>
